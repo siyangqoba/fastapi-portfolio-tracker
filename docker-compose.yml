@@ -1,0 +1,26 @@
+# docker compose up --build  ->  http://localhost:8000
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: portfolio
+      POSTGRES_PASSWORD: portfolio
+      POSTGRES_DB: portfolio
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U portfolio"]
+      interval: 5s
+      retries: 20
+
+  app:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      PT_DATABASE_URL: postgresql+psycopg2://portfolio:portfolio@db:5432/portfolio
+      PT_BASE_CURRENCY: ZAR
+      PT_LOAD_SAMPLE_DATA: "true"
+    depends_on:
+      db: { condition: service_healthy }
+
+volumes:
+  pgdata:
