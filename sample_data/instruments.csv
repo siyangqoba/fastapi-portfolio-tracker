@@ -1,0 +1,6 @@
+symbol,name,asset_class
+SAEQ,Sample SA Top 40 Equity Fund,Equity
+GLEQ,Sample Global Equity Feeder Fund,Equity
+SABND,Sample SA Government Bond Fund,Bond
+PROP,Sample SA Listed Property Fund,Property
+GOLD,Sample Gold Tracker,Commodity
