@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portfolio Tracker</title>
+  <link rel="icon" href="{{ url_for('static', path='favicon.svg') }}" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+  <script src="{{ url_for('static', path='vendor/chart.umd.min.js') }}"></script>
+</head>
+<body data-currency="{{ currency }}">
+  <header class="top">
+    <div>
+      <h1>Portfolio Tracker</h1>
+      <p class="muted" id="asof">Loading…</p>
+    </div>
+    <nav>
+      <a href="#activity">Transactions</a>
+      <a href="/docs" target="_blank" rel="noopener">API docs</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="kpis" id="kpis" aria-live="polite"></section>
+
+    <section class="card wide">
+      <div class="card-head">
+        <h2>Portfolio value vs money invested</h2>
+        <div class="seg" role="group" aria-label="Frequency">
+          <button data-freq="D">Daily</button><button data-freq="W" class="on">Weekly</button><button data-freq="M">Monthly</button>
+        </div>
+      </div>
+      <div class="chart-box tall"><canvas id="valueChart"></canvas></div>
+    </section>
+
+    <div class="grid-2">
+      <section class="card">
+        <div class="card-head"><h2>Drawdown</h2><span class="muted small">time-weighted, from previous peak</span></div>
+        <div class="chart-box"><canvas id="ddChart"></canvas></div>
+      </section>
+      <section class="card">
+        <div class="card-head"><h2>Allocation</h2></div>
+        <div class="chart-box"><canvas id="allocChart"></canvas></div>
+      </section>
+    </div>
+
+    <section class="card wide">
+      <div class="card-head"><h2>Holdings</h2><span class="muted small">FIFO cost basis, fees included</span></div>
+      <div class="table-wrap"><table id="holdings"></table></div>
+    </section>
+
+    <section class="card wide">
+      <div class="card-head"><h2>Monthly returns</h2><span class="muted small">time-weighted, net of fees</span></div>
+      <div class="table-wrap"><table id="monthly" class="heat"></table></div>
+    </section>
+
+    <div class="grid-2" id="activity">
+      <section class="card">
+        <div class="card-head"><h2>Recent transactions</h2></div>
+        <div class="table-wrap short"><table id="txs"></table></div>
+      </section>
+      <section class="card">
+        <div class="card-head"><h2>Add a transaction</h2></div>
+        <form id="txForm" class="form">
+          <label>Date <input type="date" name="date" required></label>
+          <label>Type
+            <select name="type">
+              <option>BUY</option><option>SELL</option><option>DEPOSIT</option>
+              <option>WITHDRAWAL</option><option>DIVIDEND</option><option>FEE</option>
+            </select>
+          </label>
+          <label>Symbol <select name="symbol" id="symbolSelect"><option value="">—</option></select></label>
+          <label>Quantity <input type="number" name="quantity" step="any" min="0"></label>
+          <label>Price <input type="number" name="price" step="any" min="0"></label>
+          <label>Amount <input type="number" name="amount" step="any" min="0"></label>
+          <label>Fees <input type="number" name="fees" step="any" min="0" value="0"></label>
+          <button type="submit" class="primary">Save</button>
+          <p class="msg" id="txMsg" role="status"></p>
+        </form>
+        <h3>Import CSV</h3>
+        <form id="importForm" class="form import">
+          <label>File type
+            <select name="kind">
+              <option value="transactions">Transactions</option>
+              <option value="prices">Prices</option>
+              <option value="instruments">Instruments</option>
+            </select>
+          </label>
+          <label>CSV file <input type="file" name="file" accept=".csv,text/csv" required></label>
+          <button type="submit">Upload</button>
+          <p class="msg" id="importMsg" role="status"></p>
+        </form>
+      </section>
+    </div>
+  </main>
+  <footer class="muted small">Sample data is simulated. Not investment advice.</footer>
+  <script src="{{ url_for('static', path='app.js') }}"></script>
+</body>
+</html>
